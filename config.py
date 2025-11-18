@@ -1,6 +1,6 @@
 import os
 
-from dotenv import load_dotenv, find_dotenv, dotenv_values
+from dotenv import find_dotenv, dotenv_values
 
 os.mkdir('.env') if not os.path.exists('.env') else None
 env = dotenv_values(find_dotenv() or '.env')

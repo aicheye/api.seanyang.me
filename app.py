@@ -6,7 +6,6 @@ import git
 import sys
 import requests
 from config import Config
-from dotenv import find_dotenv, set_key
 
 from rate_limiter import increment_and_check, get_count
 
