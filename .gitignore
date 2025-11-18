@@ -1,1 +1,5 @@
 /.env
+.cat_clicks.json
+.rate_limits.json
+*.pyc
+__pycache__/
