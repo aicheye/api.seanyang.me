@@ -1,0 +1,7 @@
+POST http://localhost:5000/poke
+Content-Type: application/json
+
+{
+  "message": "",
+  "author": ""
+}
