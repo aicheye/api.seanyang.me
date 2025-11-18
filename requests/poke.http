@@ -1,4 +1,4 @@
-POST http://localhost:5000/poke
+POST https://api.seanyang.me/poke
 Content-Type: application/json
 
 {

@@ -1,15 +1,16 @@
 import json
 import os
-
 from flask import Flask, jsonify, request
 import git
 import sys
 import requests
 from config import Config
-
-from rate_limiter import increment_and_check, get_count
+from rate_limiter import increment_and_check
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app, resources={r"/*": {"origins": ["https://seanyang.me", "https://www.seanyang.me", "http://localhost:3000"]}})
 
 
 @app.route('/', methods=['GET'])
@@ -28,6 +29,7 @@ def main():
         'status': 'ok',
         'service': 'api.seanyang.me'
     }), 200
+
 
 @app.route('/cat', methods=['POST'])
 def cat():
