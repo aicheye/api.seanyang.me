@@ -10,7 +10,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": ["https://seanyang.me", "https://www.seanyang.me", "http://localhost:3000"]}})
+CORS(app, resources={r"/*": {"origins": ["https://seanyang.me", "https://www.seanyang.me"]}})
 
 
 @app.route('/', methods=['GET'])
