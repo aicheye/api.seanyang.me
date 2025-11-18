@@ -27,7 +27,7 @@ def main():
         'python': f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
         'status': 'ok',
         'service': 'api.seanyang.me'
-    }), 0o200
+    }), 200
 
 @app.route('/cat', methods=['POST'])
 def cat():
