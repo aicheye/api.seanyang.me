@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Flask, jsonify, request
@@ -6,6 +7,8 @@ import sys
 import requests
 from config import Config
 from dotenv import find_dotenv, set_key
+
+from rate_limiter import increment_and_check, get_count
 
 app = Flask(__name__)
 
@@ -25,22 +28,59 @@ def main():
         'python': f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
         'status': 'ok',
         'service': 'api.seanyang.me'
-    }), 200
-
+    }), 0o200
 
 @app.route('/cat', methods=['POST'])
 def cat():
-    Config.CAT_CLICKS += 1
-    set_key(find_dotenv(), 'CAT_CLICKS', str(Config.CAT_CLICKS))
+    # Enforce hourly global limit
+    allowed, hr_count = increment_and_check('cat', Config.CAT_HOURLY_LIMIT)
+    if not allowed:
+        return jsonify({
+            'status': 'error',
+            'message': 'Hourly cat limit reached',
+            'hourly_count': hr_count,
+            'hourly_limit': Config.CAT_HOURLY_LIMIT
+        }), 429
+
+    # If allowed, increment total cat clicks
+    clicks = 0
+
+    # Load current count
+    if not os.path.exists(Config.CAT_STORE_FILE):
+        print("Creating cat store file")
+        clicks = 0
+    try:
+        with open(Config.CAT_STORE_FILE, 'r') as f:
+            clicks = json.load(f).get('count', 0)
+    except Exception:
+        # Corrupt or unreadable file — start fresh
+        clicks = 0
+
+    # Increment
+    clicks += 1
+
+    # Save updated count
+    if not (os.path.exists(Config.CAT_STORE_FILE)):
+        with open(Config.CAT_STORE_FILE, 'w') as f:
+            json.dump({'count': 0}, f)
+
+    tmp = Config.CAT_STORE_FILE + '.tmp'
+    with open(tmp, 'w') as f:
+        json.dump({'count': clicks}, f)
+    # atomic replace
+    os.replace(tmp, Config.CAT_STORE_FILE)
+
     return jsonify({
         'status': 'ok',
-        'count': Config.CAT_CLICKS
+        'count': clicks,
+        'hourly_count': hr_count,
+        'hourly_limit': Config.CAT_HOURLY_LIMIT
     }), 200
 
 
 @app.route('/poke', methods=['POST'])
 def poke():
-    data = request.get_json()
+    data = request.get_json() or {}
 
     message = data.get('message') or 'Poke!'
     author = data.get('author') or 'Anonymous'
@@ -56,6 +96,16 @@ def poke():
             'status': 'error',
             'message': 'Author name too long (max 21 characters)'
         }), 400
+
+    # Enforce hourly global limit for poke
+    allowed, hr_count = increment_and_check('poke', Config.POKE_HOURLY_LIMIT)
+    if not allowed:
+        return jsonify({
+            'status': 'error',
+            'message': 'Hourly poke limit reached',
+            'hourly_count': hr_count,
+            'hourly_limit': Config.POKE_HOURLY_LIMIT
+        }), 429
 
     response = requests.post(
         'https://api.pushover.net/1/messages.json',
@@ -77,7 +127,9 @@ def poke():
 
     return jsonify({
         'status': 'ok',
-        'message': 'Poke sent successfully'
+        'message': 'Poke sent successfully',
+        'hourly_count': hr_count,
+        'hourly_limit': Config.POKE_HOURLY_LIMIT
     }), 200
 
 
