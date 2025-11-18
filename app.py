@@ -14,15 +14,13 @@ app = Flask(__name__)
 def main():
     cwd = os.getcwd()
 
-    return jsonify({})
-
     return jsonify({
         'git': {
             'branch': git.Repo(cwd).active_branch.name,
             'commit': git.Repo(cwd).head.commit.hexsha,
             'author': git.Repo(cwd).head.commit.author.name,
             'message': git.Repo(cwd).head.commit.message,
-            'remote_url': next(git.Repo(cwd).remote().urls)
+            'remote': next(git.Repo(cwd).remote().urls)
         },
         'python': f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
         'status': 'ok',
