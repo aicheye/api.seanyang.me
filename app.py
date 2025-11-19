@@ -42,7 +42,7 @@ def main():
             "python": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
             "service": "api.seanyang.me",
             "status": "ok",
-            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
     ), 200
 
