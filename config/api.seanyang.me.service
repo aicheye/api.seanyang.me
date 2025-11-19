@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn for api.seanyang.me
+After=network.target
+
+[Service]
+User=aicheye
+WorkingDirectory=/home/aicheye/api.seanyang.me
+ExecStart=/home/aicheye/api.seanyang.me/venv/bin/gunicorn --workers 3 --bind unix:/home/aicheye/api.seanyang.me/api.sock app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
