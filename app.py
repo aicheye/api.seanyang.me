@@ -8,9 +8,10 @@ import json
 import os
 import sys
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-import git
+from datetime import datetime, timezone
+from flask import Flask, jsonify, request  # pylint: disable=import-error
+from flask_cors import CORS  # pylint: disable=import-error
+import git  # pylint: disable=import-error
 import requests
 
 from config import Config
@@ -32,15 +33,16 @@ def main():
     return jsonify(
         {
             "git": {
+                "author": git.Repo(cwd).head.commit.author.name,
                 "branch": git.Repo(cwd).active_branch.name,
                 "commit": git.Repo(cwd).head.commit.hexsha,
-                "author": git.Repo(cwd).head.commit.author.name,
                 "message": git.Repo(cwd).head.commit.message,
                 "remote": next(git.Repo(cwd).remote().urls),
             },
             "python": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
-            "status": "ok",
             "service": "api.seanyang.me",
+            "status": "ok",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         }
     ), 200
 

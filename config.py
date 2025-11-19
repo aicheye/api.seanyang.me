@@ -6,7 +6,7 @@ configuration constants via the `Config` class.
 
 import os
 
-from dotenv import find_dotenv, dotenv_values
+from dotenv import find_dotenv, dotenv_values  # pylint: disable=import-error
 
 # Ensure a .env file exists so dotenv_values has somewhere to read from.
 if not os.path.exists(".env"):
