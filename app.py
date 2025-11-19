@@ -49,8 +49,8 @@ def main():
 
 @app.route("/health", methods=["GET"])
 def health():
-    """Return OK."""
-    return 204
+    """Return simple health status."""
+    return jsonify({"status": "ok"}), 200
 
 
 @app.route("/cat", methods=["POST"])
