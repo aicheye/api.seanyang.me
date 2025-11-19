@@ -36,7 +36,7 @@ def main():
                 "author": git.Repo(cwd).head.commit.author.name,
                 "branch": git.Repo(cwd).active_branch.name,
                 "commit": git.Repo(cwd).head.commit.hexsha,
-                "message": git.Repo(cwd).head.commit.message,
+                "message": git.Repo(cwd).head.commit.message.strip(),
                 "remote": next(git.Repo(cwd).remote().urls),
             },
             "python": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
