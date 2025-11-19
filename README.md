@@ -5,6 +5,7 @@
 
 **Features**
 - **Status:** `GET /` — returns git and runtime info (commit, branch, Python version, timestamp).
+- **Health Check**: `GET /health` — returns health status.
 - **Cat counter:** `POST /cat` — increments a persistent cat click counter stored in `data/.cat_clicks.json`. Enforces an hourly global limit.
 - **Poke:** `POST /poke` — sends a Pushover notification. Accepts JSON with `message` and optional `author`. Enforces an hourly global limit.
 
