@@ -7,13 +7,13 @@ like counting cat clicks and sending poke notifications.
 import json
 import os
 import sys
-
 from datetime import datetime, timezone
+
+import git  # pylint: disable=import-error
 from flask import Flask, jsonify, request  # pylint: disable=import-error
 from flask_cors import CORS  # pylint: disable=import-error
-import git  # pylint: disable=import-error
-import requests
 
+import requests
 from config import Config
 from rate_limiter import increment_and_check
 
@@ -45,6 +45,12 @@ def main():
             "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         }
     ), 200
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    """Return OK."""
+    return 204
 
 
 @app.route("/cat", methods=["POST"])
