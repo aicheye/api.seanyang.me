@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=aicheye
 WorkingDirectory=/home/aicheye/api.seanyang.me
-ExecStart=/home/aicheye/api.seanyang.me/venv/bin/gunicorn --workers 1 --bind 127.0.0.1:8000 app:app
+ExecStart=/home/aicheye/api.seanyang.me/venv/bin/gunicorn --workers 3 --bind unix:/home/aicheye/api.seanyang.me/api.sock app:app
 Restart=always
 
 [Install]
